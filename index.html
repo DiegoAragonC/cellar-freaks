@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <title>Broughlike Tutorial</title>
+    </head>
+    <style>
+        canvas {
+            outline: 1px solid white;
+        }
+        body {
+            background-color: indianred;
+            text-align: center;
+            margin-top: 50px;
+        }
+    </style>
+    <body>
+        <canvas></canvas>
+        <script src="scripts/game.js"></script>
+        <script src="scripts/map.js"></script>
+        <script src="scripts/monster.js"></script>
+        <script src="scripts/spell.js"></script>
+        <script src="scripts/tile.js"></script>
+        <script src="scripts/util.js"></script>
+        <script>
+            let tileSize = 64;
+            let numTiles = 9;
+            let uiWidth = 4;
+            let canvas = setupCanvas();
+            let ctx = canvas.getContext("2d");
+            ctx.imageSmoothingEnabled = false;
+            let level = 1;
+            let maxHP = 5;
+            let score = 0;
+            let numSpells;
+
+            let spritesheet = new Image();
+            spritesheet.src = "sprites/spritesheet.png";
+            const tileSprites = { "player":0, "playerDead":1, "floor":2, "wall":3, "bird": 4, "snake": 5,
+                                 "tank": 6, "eater": 7, "jester": 8, "health": 9, "teleport": 10, "portal": 11,
+                                 "treasure": 12 };
+            spritesheet.onload = showTitle;
+
+            let gameState = "loading";
+
+            let startingHP = 3;
+            let numLevels = 6;
+
+            let shakeAmount = 0;
+            let shakeX = 0;
+            let shakeY = 0;
+
+            let tiles;
+            let monsters;
+            let player;
+            let sounds;
+
+            document.querySelector("html").onkeypress = function(e) {
+                if (gameState == "title") {
+                    startGame();
+                } else if (gameState == "dead") {
+                    showTitle();
+                } else if (gameState == "running") {
+                    if (e.key == "w") player.tryMove(0, -1);
+                    if (e.key == "s") player.tryMove(0, 1);
+                    if (e.key == "a") player.tryMove(-1, 0);
+                    if (e.key == "d") player.tryMove(1, 0);
+
+                    if (e.key >= 1 && e.key <= 9) player.castSpell(e.key-1);
+                }
+            };
+
+            setInterval(draw, 15);
+            initSounds();
+        </script>
+    </body>
+</html>
